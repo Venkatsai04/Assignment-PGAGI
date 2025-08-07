@@ -1,127 +1,155 @@
 import React, { useEffect } from 'react';
-import ThemeToggle from './components/ThemeToggle.jsx';
+import Header from './reuseableComponents/Header';
+import FilterBar from './reuseableComponents/FilterBar';
+import ContentCard from './reuseableComponents/ContentCard';
+import BottomNav from './reuseableComponents/BottomNav';
 import { useSelector } from 'react-redux';
+import { Routes, Route } from 'react-router-dom';
+import SourcePage from './pages/SourcePage';
+import CustuomizePage from './pages/CustuomizePage';
+import SettingsPage from './pages/SettingsPage';
+
+const contentData = [
+  {
+    id: 1,
+    hoursAgo: 5,
+    imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuAo9swDdHWlUEpyyjmln-svM1fsOxf92_BUc_45rnnZOg6r5Rw-dZ7b9Nw69BLnhcGkEb6qTnh6QcjwzfppgBucXyTa1TLpDldOyc-W2BkeG0cryceZfqauksxBcWOdQspYqwNqwATDmaadoqz1ybS9T1Bbll2VLgfaKPWo0SlFex_47eaM5CSolACSqsuDIb85OkYDJNGk2LlFcgfRwNh887szX2wkFNtpkDrFDQibYsDz43xd5JFCeOUfmrHNC3wl4XiNf3HiyaOf",
+    title: "Tech Breakthrough: New AI Unveiled",
+    description: "A new AI technology has been unveiled, promising to change the way we interact with devices.",
+    readTime: "2 min read",
+  },
+  {
+    id: 2,
+    hoursAgo: 5,
+    imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuCC_YkGHUgtzJ6-4HB9yItzjPMpGBrl_b-xbD7_-ap7Ul1t0lGWqLrfWLWp8EiblEGe7Q-grF94vGDvlTZDUpYLaLlM4z6hsuF71rTIDn5dG0oJJXlw0HhKUt07_QoQSEg_JbO_jb4jD1tz0CC3gJVQkyTZhp6DWuSk76EKRuUc1lGDBvDb1k18Xbp2ZEzvOFCH9ODc39SwxCy5I7K4yzr8hXZ7yaSQP_jjtwDns9UBaKLSXVY0CW9qRN_TlGRkJkElPBjbR2XTQWMZ",
+    title: "Top 5 Travel Destinations for 2024",
+    description: "Explore the most sought-after travel spots this year, from exotic beaches to historical landmarks.",
+    readTime: "5 min read",
+  },
+  {
+    id: 3,
+    hoursAgo: 5,
+    imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuAEJA1M1eVp0RpktmYxGayCn8bKfdNb0pc_s168lOfsy_tspjVwIa0kMY_j5ijusr-OF4gl_SiKpSo2l56CGw-aXVhWRuzX3N_fzIIoQSv7B9KgdUV-40JUUarQiTAUbeas9VlxJ8calfKIkjkqSFWv3z8ResEJ8vd26V1qSs6ZSrEYJmBUML7X3bypLOGuGgS8B6pTkrGnxFxkssvJdEDDH9B19dIoOwYT2QyWFWYD_s5O44FXqGmOoVMN_sMnNGlFynAaJvbx6CKJ",
+    title: "Healthy Eating Tips for a Balanced Diet",
+    description: "Learn how to maintain a healthy lifestyle with simple dietary changes and nutritious recipes.",
+    readTime: "3 min read",
+  },
+  {
+    id: 4,
+    hoursAgo: 5,
+    imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuCYevXwE34EkRIl3_7ZOBG52zxGAKFbjWmD4g4OV2ZJGo8VFRIvOHHPa8FpUqDtcxyjtnHx88nn0yvsIQj1Q3bQdyoREvAGgYkKAi5J4rMBB4xIVWor5oiBIINjsakSrG5CIeFnQXdNnJBXPI91fW029WULmSmOuLt2FKo4holYsXOI62IP4YCP2tPJQsKdB45fC5m3b4PjMDU-epb7hFuXQykDEMiEvk2u3o5OzjMDba7QsXNMWtrpSpz-Sum3kMQEkZUl70enLpnY",
+    title: "The Future of Renewable Energy",
+    description: "An in-depth look at the advancements in renewable energy and its impact on the environment.",
+    readTime: "4 min read",
+  },
+  {
+    id: 5,
+    hoursAgo: 5,
+    imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuCIQsirOPrjH1JeFZpUs8NIpAP6ymrbt_0lQoxtUcIvPOKi4FSPgafs74VmlDwAJyJRCnzuvYrW_zd62EwCkXt-afsQ1XUDaIBzGB_Foh69kwTaTL8vnAzR-CqVYe_OLTvV2-c5Xg-T8pisWV7zInKnowl1ks7HOIAm-e0xJ47mMLDTXaaFKdxPzglTgyO1UjxZl_HR2S8INAyFrv2O5sysSgeIgzJpXUnhyGSx_5Za3EYL1Nev07vT6JYqX3xGtmd22m9a2WudaIR7",
+    title: "Mastering the Art of Photography",
+    description: "Tips and techniques to improve your photography skills, from basic settings to advanced composition.",
+    readTime: "6 min read",
+  },
+  {
+    id: 6,
+    hoursAgo: 5,
+    imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuAo9swDdHWlUEpyyjmln-svM1fsOxf92_BUc_45rnnZOg6r5Rw-dZ7b9Nw69BLnhcGkEb6qTnh6QcjwzfppgBucXyTa1TLpDldOyc-W2BkeG0cryceZfqauksxBcWOdQspYqwNqwATDmaadoqz1ybS9T1Bbll2VLgfaKPWo0SlFex_47eaM5CSolACSqsuDIb85OkYDJNGk2LlFcgfRwNh887szX2wkFNtpkDrFDQibYsDz43xd5JFCeOUfmrHNC3wl4XiNf3HiyaOf",
+    title: "Tech Breakthrough: New AI Unveiled",
+    description: "A new AI technology has been unveiled, promising to change the way we interact with devices.",
+    readTime: "2 min read",
+  },
+  {
+    id: 7,
+    hoursAgo: 5,
+    imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuCC_YkGHUgtzJ6-4HB9yItzjPMpGBrl_b-xbD7_-ap7Ul1t0lGWqLrfWLWp8EiblEGe7Q-grF94vGDvlTZDUpYLaLlM4z6hsuF71rTIDn5dG0oJJXlw0HhKUt07_QoQSEg_JbO_jb4jD1tz0CC3gJVQkyTZhp6DWuSk76EKRuUc1lGDBvDb1k18Xbp2ZEzvOFCH9ODc39SwxCy5I7K4yzr8hXZ7yaSQP_jjtwDns9UBaKLSXVY0CW9qRN_TlGRkJkElPBjbR2XTQWMZ",
+    title: "Top 5 Travel Destinations for 2024",
+    description: "Explore the most sought-after travel spots this year, from exotic beaches to historical landmarks.",
+    readTime: "5 min read",
+  },
+  {
+    id:83,
+    hoursAgo: 5,
+    imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuAEJA1M1eVp0RpktmYxGayCn8bKfdNb0pc_s168lOfsy_tspjVwIa0kMY_j5ijusr-OF4gl_SiKpSo2l56CGw-aXVhWRuzX3N_fzIIoQSv7B9KgdUV-40JUUarQiTAUbeas9VlxJ8calfKIkjkqSFWv3z8ResEJ8vd26V1qSs6ZSrEYJmBUML7X3bypLOGuGgS8B6pTkrGnxFxkssvJdEDDH9B19dIoOwYT2QyWFWYD_s5O44FXqGmOoVMN_sMnNGlFynAaJvbx6CKJ",
+    title: "Healthy Eating Tips for a Balanced Diet",
+    description: "Learn how to maintain a healthy lifestyle with simple dietary changes and nutritious recipes.",
+    readTime: "3 min read",
+  },
+  {
+    id: 44,
+    hoursAgo: 5,
+    imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuCYevXwE34EkRIl3_7ZOBG52zxGAKFbjWmD4g4OV2ZJGo8VFRIvOHHPa8FpUqDtcxyjtnHx88nn0yvsIQj1Q3bQdyoREvAGgYkKAi5J4rMBB4xIVWor5oiBIINjsakSrG5CIeFnQXdNnJBXPI91fW029WULmSmOuLt2FKo4holYsXOI62IP4YCP2tPJQsKdB45fC5m3b4PjMDU-epb7hFuXQykDEMiEvk2u3o5OzjMDba7QsXNMWtrpSpz-Sum3kMQEkZUl70enLpnY",
+    title: "The Future of Renewable Energy",
+    description: "An in-depth look at the advancements in renewable energy and its impact on the environment.",
+    readTime: "4 min read",
+  },
+  {
+    id:45,
+    hoursAgo: 5,
+    imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuCIQsirOPrjH1JeFZpUs8NIpAP6ymrbt_0lQoxtUcIvPOKi4FSPgafs74VmlDwAJyJRCnzuvYrW_zd62EwCkXt-afsQ1XUDaIBzGB_Foh69kwTaTL8vnAzR-CqVYe_OLTvV2-c5Xg-T8pisWV7zInKnowl1ks7HOIAm-e0xJ47mMLDTXaaFKdxPzglTgyO1UjxZl_HR2S8INAyFrv2O5sysSgeIgzJpXUnhyGSx_5Za3EYL1Nev07vT6JYqX3xGtmd22m9a2WudaIR7",
+    title: "Mastering the Art of Photography",
+    description: "Tips and techniques to improve your photography skills, from basic settings to advanced composition.",
+    readTime: "6 min read",
+  },
+];
 
 function App() {
-  // const isDarkMode = useSelector((state) => state.preferences.darkMode);
+  const isDarkMode = useSelector((state) => state.preferences.darkMode);
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
+
+  const appBgClass = isDarkMode ? 'bg-black' : 'bg-amber-50';
+  const appBgClassSpl = isDarkMode ? 'bg-[#090030]' : 'bg-amber-50';
+
 
 
   return (
-    <div class="min-h-screen bg-gray-950 text-gray-100 font-sans antialiased">
-      <header class="bg-gray-900/70 backdrop-blur-md border-b border-gray-800 p-4 flex items-center justify-between z-10 sticky top-0">
-        <div class="flex items-center space-x-3">
-          <svg class="w-8 h-8 text-blue-500" fill="currentColor" viewBox="0 0 24 24">...</svg> <h1 class="text-2xl font-bold text-gray-50 tracking-wider">Quantum Stream</h1>
-        </div>
-        <div class="relative w-1/3">
-          <input type="text" placeholder="Search content..." class="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-200 placeholder-gray-500" />
-          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 24 24">...</svg> </div>
-        <div class="flex items-center space-x-4">
-          <ThemeToggle /> <div class="w-9 h-9 rounded-full bg-gradient-to-br from-purple-600 to-blue-500 flex items-center justify-center text-sm font-semibold">JD</div>
-        </div>
-      </header>
+    <div
+      className={`relative flex size-full min-h-screen flex-col ${appBgClassSpl} justify-between group/design-root overflow-x-hidden`}
+    >
+      <div className='fixed top-0 w-full z-10'>
+        <Header />
+      </div>
 
-      <div class="flex">
-        <aside class="w-64 bg-gray-900/70 backdrop-blur-md border-r border-gray-800 p-6 flex flex-col justify-between min-h-[calc(100vh-68px)] sticky top-[68px]">
-          <nav>
-            <ul>
-              <li class="mb-2">
-                <a href="#" class="flex items-center p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-blue-400 transition-colors duration-200">
-                  <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">...</svg> Dashboard
-                </a>
-              </li>
-              <li class="mb-2">
-                <a href="#" class="flex items-center p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-blue-400 transition-colors duration-200">
-                  <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">...</svg> News Feed
-                </a>
-              </li>
-              <li class="mb-2">
-                <a href="#" class="flex items-center p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-blue-400 transition-colors duration-200">
-                  <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">...</svg> Recommendations
-                </a>
-              </li>
-              <li class="mb-2">
-                <a href="#" class="flex items-center p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-blue-400 transition-colors duration-200">
-                  <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">...</svg> Social Stream
-                </a>
-              </li>
-              <li class="mb-2">
-                <a href="#" class="flex items-center p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-blue-400 transition-colors duration-200">
-                  <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">...</svg> Favorites
-                </a>
-              </li>
-            </ul>
-          </nav>
-          <div>
-            <a href="#" class="flex items-center p-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-blue-400 transition-colors duration-200">
-              <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 24 24">...</svg> Settings
-            </a>
-          </div>
-        </aside>
+      <div className='flex-1 overflow-y-auto mt-[75px] pb-[70px]'>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <FilterBar />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+                  {contentData.map((item) => (
+                    <div key={item.id} className="@container">
+                      <ContentCard 
+                        id = {item.id}
+                        imageUrl={item.imageUrl}
+                        title={item.title}
+                        description={item.description}
+                        readTime={item.readTime}
+                        hoursAgo={item.hoursAgo}
+                      />
+                    </div>
+                  ))}
 
-        <main class="flex-1 p-8 overflow-y-auto">
-          <section class="mb-8">
-            <h2 class="text-3xl font-bold text-blue-400 mb-6 border-b border-blue-600/30 pb-2">Trending News</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div class="bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-700 hover:border-blue-500 transition-all duration-300 group">
-                <img src="https://via.placeholder.com/400x200?text=News+Image" alt="News Title" class="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300" />
-                <div class="p-4">
-                  <h3 class="text-xl font-semibold text-gray-50 mb-2">Futuristic AI Breakthrough Unveiled</h3>
-                  <p class="text-gray-400 text-sm mb-3 line-clamp-3">Scientists have announced a revolutionary AI model capable of predicting quantum states with unprecedented accuracy, promising new frontiers in computing and material science.</p>
-                  <div class="flex justify-between items-center text-xs text-gray-500">
-                    <span>Source: TechPulse</span>
-                    <span>2 hours ago</span>
-                  </div>
-                  <button class="mt-4 w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300">Read Article</button>
                 </div>
-              </div>
-            </div>
-          </section>
+              </>
+            }
+          />
+          <Route path="/home" element={<App />} />
+          <Route path="/sources" element={<SourcePage />} />
+          <Route path="/customize" element={<CustuomizePage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+        </Routes>
+      </div>
 
-          <section class="mb-8">
-            <h2 class="text-3xl font-bold text-purple-400 mb-6 border-b border-purple-600/30 pb-2">Your Quantum Recommendations</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div class="bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-700 hover:border-purple-500 transition-all duration-300 group">
-                <img src="https://via.placeholder.com/300x400?text=Movie+Poster" alt="Movie Title" class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300" />
-                <div class="p-3">
-                  <h3 class="text-lg font-semibold text-gray-50 mb-1">Cybernetic Dawn (2025)</h3>
-                  <p class="text-gray-400 text-sm">Action, Sci-Fi</p>
-                  <div class="flex items-center mt-2">
-                    <span class="text-yellow-400 mr-1">★</span>
-                    <span class="text-gray-300 text-sm">8.7</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section class="mb-8">
-            <h2 class="text-3xl font-bold text-lime-400 mb-6 border-b border-lime-600/30 pb-2">Social Pulse</h2>
-            <div class="space-y-4">
-              <div class="bg-gray-800 rounded-xl shadow-lg p-4 border border-gray-700 hover:border-lime-500 transition-all duration-300">
-                <div class="flex items-center mb-3">
-                  <div class="w-10 h-10 rounded-full bg-gradient-to-br from-lime-500 to-green-500 mr-3 flex items-center justify-center text-sm font-semibold">AI</div>
-                  <div>
-                    <p class="text-gray-50 font-semibold">@Aether_Innovator</p>
-                    <p class="text-gray-400 text-xs">15 mins ago</p>
-                  </div>
-                </div>
-                <p class="text-gray-300 mb-3">Just witnessed a live demo of neural network self-optimization. The future is here, and it's learning at an exponential rate! #AI #FutureTech</p>
-                <div class="flex space-x-4 text-gray-500 text-sm">
-                  <button class="flex items-center hover:text-lime-400"><svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">...</svg> 120 Likes</button>
-                  <button class="flex items-center hover:text-lime-400"><svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">...</svg> 35 Comments</button>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section class="mb-8">
-            <h2 class="text-3xl font-bold text-fuchsia-400 mb-6 border-b border-fuchsia-600/30 pb-2">Dashboard Settings</h2>
-            <div class="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700">
-              {/* <SettingsPanel /> */}
-            </div>
-          </section>
-
-        </main>
+      <div>
+        <BottomNav />
       </div>
     </div>
   );
