@@ -17,9 +17,6 @@ const ContentCard = ({ imageUrl, title, description, readTime, hoursAgo, id }) =
 
   const [selectedId, setSelectedId] = useState(null);
 
-  const openContentPage = (id) => {
-    setSelectedId(id);
-  };
 
 
   return (
@@ -42,9 +39,7 @@ const ContentCard = ({ imageUrl, title, description, readTime, hoursAgo, id }) =
           </div>
         </div>
       </div>
-      {selectedId && (
-        <ContentPage id={id} />
-      )}
+      
     </>
   );
 };
