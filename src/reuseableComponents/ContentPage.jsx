@@ -1,8 +1,8 @@
 import React from 'react'
 
-const ContentPage = () => {
+const ContentPage = ({id}) => {
   return (
-    <div>ContentPage</div>
+    <div>id</div>
   )
 }
 
