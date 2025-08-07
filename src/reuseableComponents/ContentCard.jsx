@@ -18,7 +18,7 @@ const ContentCard = ({ imageUrl, title, description, readTime, hoursAgo ,id}) =>
   return (
     <div >
 
-      <div className={`${cardBgClass} flex flex-col items-stretch justify-start rounded-[8px] @xl:flex-row @xl:items-start`} >
+      <div  onClick={() => openContentPage(id)} className={`${cardBgClass} flex flex-col items-stretch justify-start rounded-[8px] @xl:flex-row @xl:items-start`} >
         <p className={`${cardTextClass} absolute text-sm font-bold leading-tight tracking-[-0.015em] m-1.5 ${cardBgClass} w-[95px] p-[5px] rounded-[6px]`}>{hoursAgo} Hours Ago</p>
         <div
           className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"
