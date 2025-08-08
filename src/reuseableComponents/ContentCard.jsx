@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-const ContentCard = ({ imageUrl, title, description, readTime, hoursAgo, id }) => {
+const ContentCard = ({ imageUrl, title, description, readTime, hoursAgo, id ,url}) => {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -13,19 +13,14 @@ const ContentCard = ({ imageUrl, title, description, readTime, hoursAgo, id }) =
   const cardBgClassSpl = isDarkMode ? 'bg-[#090030]' : 'bg-white';
   const cardTextClass = isDarkMode ? 'text-white' : 'text-black';
   const cardTextClassSpl = isDarkMode ? 'text-[#b9b9b9]' : 'text-[#313131]';
-  
+
 
   const [selectedId, setSelectedId] = useState(null);
 
-  const openContentPage = (contentId) => {
-    setSelectedId(contentId);
-    navigate(`/content/${contentId}`);
-  };
 
   return (
     <div>
       <div
-        onClick={() => openContentPage(id)}
         className={`${cardBgClass} flex flex-col items-stretch justify-start rounded-[8px] @xl:flex-row @xl:items-start shadow-xl/20 cursor-pointer`}
       >
         <p className={`${cardTextClass} absolute text-sm font-bold leading-tight tracking-[-0.015em] m-1.5 ${cardBgClass} w-[105px] p-[5px] rounded-[6px]`}>
@@ -47,6 +42,25 @@ const ContentCard = ({ imageUrl, title, description, readTime, hoursAgo, id }) =
               <p className={`${cardTextClassSpl} text-justify font-normal leading-normal pl-2 pr-2`}>
                 {readTime}
               </p>
+              <button>
+                <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: "inline-block",
+                  marginTop: "20px",
+                  padding: "10px 20px",
+                  background: "#0078d4",
+                  color: "white",
+                  borderRadius: "5px",
+                  textDecoration: "none",
+                  width: '50%'
+                }}
+              >
+                Read Full Article
+              </a>
+              </button>
             </div>
           </div>
         </div>

@@ -8,7 +8,7 @@ import { Routes, Route } from 'react-router-dom';
 import SourcePage from './pages/SourcePage';
 import CustuomizePage from './pages/CustuomizePage';
 import SettingsPage from './pages/SettingsPage';
-import ContentPage from './reuseableComponents/ContentPage';
+
 
 function App() {
   const isDarkMode = useSelector((state) => state.preferences.darkMode);
@@ -85,6 +85,7 @@ function App() {
                           title={item.title}
                           description={item.description}
                           readTime={item.source?.name}
+                          url = {item.url}
                           hoursAgo={Math.floor(
                             (Date.now() - new Date(item.publishedAt)) / 3600000
                           )}
@@ -100,7 +101,7 @@ function App() {
           <Route path="/sources" element={<SourcePage />} />
           <Route path="/customize" element={<CustuomizePage />} />
           <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/content/:id" element={<ContentPage />} />
+         
         </Routes>
       </div>
 
