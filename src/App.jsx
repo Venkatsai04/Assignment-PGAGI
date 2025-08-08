@@ -8,6 +8,7 @@ import { Routes, Route } from 'react-router-dom';
 import SourcePage from './pages/SourcePage';
 import CustuomizePage from './pages/CustuomizePage';
 import SettingsPage from './pages/SettingsPage';
+import ContentPage from './reuseableComponents/ContentPage';
 
 function App() {
   const isDarkMode = useSelector((state) => state.preferences.darkMode);
@@ -73,7 +74,7 @@ function App() {
                   onSelectCategory={setSelectedCategory}
                 />
                 {loading ? (
-                  <div className="p-4 text-center text-gray-500">Loading news...</div>
+                  <div className="p-4 text-center text-gray-500">Loading Content...</div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
                     {articles.map((item, idx) => (
@@ -99,6 +100,7 @@ function App() {
           <Route path="/sources" element={<SourcePage />} />
           <Route path="/customize" element={<CustuomizePage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/content/:id" element={<ContentPage />} />
         </Routes>
       </div>
 

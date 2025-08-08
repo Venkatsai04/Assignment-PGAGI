@@ -13,6 +13,7 @@ const ContentCard = ({ imageUrl, title, description, readTime, hoursAgo, id }) =
   const cardBgClassSpl = isDarkMode ? 'bg-[#090030]' : 'bg-white';
   const cardTextClass = isDarkMode ? 'text-white' : 'text-black';
   const cardTextClassSpl = isDarkMode ? 'text-[#b9b9b9]' : 'text-[#313131]';
+  
 
   const [selectedId, setSelectedId] = useState(null);
 
@@ -27,7 +28,7 @@ const ContentCard = ({ imageUrl, title, description, readTime, hoursAgo, id }) =
         onClick={() => openContentPage(id)}
         className={`${cardBgClass} flex flex-col items-stretch justify-start rounded-[8px] @xl:flex-row @xl:items-start shadow-xl/20 cursor-pointer`}
       >
-        <p className={`${cardTextClass} absolute text-sm font-bold leading-tight tracking-[-0.015em] m-1.5 ${cardBgClass} w-[95px] p-[5px] rounded-[6px]`}>
+        <p className={`${cardTextClass} absolute text-sm font-bold leading-tight tracking-[-0.015em] m-1.5 ${cardBgClass} w-[105px] p-[5px] rounded-[6px]`}>
           {hoursAgo} Hours Ago
         </p>
         <div
