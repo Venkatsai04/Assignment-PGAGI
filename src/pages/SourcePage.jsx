@@ -45,7 +45,7 @@ const SourcePage = () => {
 
                 <div>
                     <h3 className={`${SourcePageTextBaseClass} text-lg font-bold px-4 pb-2 pt-4`}>
-                        Your Sources
+                        Your Preferences
                     </h3>
                     <div>
                         {yourSources.map((source, index) => (

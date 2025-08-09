@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-const categories = ['All', 'News', 'Technology', 'Sports', 'Finance', 'Tech'];
+const categories = ['All', 'News', 'Technology', 'Sports', 'Finance'];
 
 const FilterBar = ({ selectedCategory, onSelectCategory }) => {
   const isDarkMode = useSelector((state) => state.preferences.darkMode);

@@ -84,7 +84,7 @@ function App() {
                           imageUrl={item.urlToImage}
                           title={item.title}
                           description={item.description}
-                          readTime={item.source?.name}
+                          source={item.source?.name}
                           url = {item.url}
                           hoursAgo={Math.floor(
                             (Date.now() - new Date(item.publishedAt)) / 3600000
