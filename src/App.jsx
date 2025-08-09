@@ -8,6 +8,7 @@ import { Routes, Route } from 'react-router-dom';
 import SourcePage from './pages/SourcePage';
 import CustuomizePage from './pages/CustuomizePage';
 import SettingsPage from './pages/SettingsPage';
+import Recommendations from './pages/Recommendations ';
 
 
 function App() {
@@ -101,6 +102,7 @@ function App() {
           <Route path="/sources" element={<SourcePage />} />
           <Route path="/customize" element={<CustuomizePage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/Recommendations" element={<Recommendations />} />
          
         </Routes>
       </div>

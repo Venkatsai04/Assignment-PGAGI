@@ -1,31 +1,43 @@
-// src/components/Header.jsx
-import React from 'react';
-import SearchIcon from '../icons/SearchIcon';
-import ThemeToggle from './ThemeToggle'; 
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-
+import ThemeToggle from './ThemeToggle';
+import SearchIcon from '../icons/SearchIcon';
+import { FiMenu } from 'react-icons/fi'; 
+import Sidebar from './Sidebar'; 
 
 const Header = () => {
-
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isDarkMode = useSelector((state) => state.preferences.darkMode);
+
   const headerBgClass = isDarkMode ? 'bg-[#090030]' : 'bg-amber-50';
   const headerTextClass = isDarkMode ? 'text-white' : 'text-black';
-  // const headerTextClassSpcl = isDarkMode ? 'text-yellow-400' : 'text-black';
 
   return (
-    <div className={`flex items-center ${headerBgClass} p-4 pb-2 justify-between`}>
-      <div className={`${headerTextClass} flex size-12 shrink-0 items-center justify-start`}> 
-        <h2 className={`${headerTextClass} text-xl font-bold leading-tight tracking-[-0.015em]`}>
-          Content<span className='text-red-600'>X</span>
-        </h2>
+    <>
+      <div className={`flex items-center ${headerBgClass} p-4 pb-2 justify-between`}>
+        {/* Left Section with Hamburger */}
+        <div className="flex items-center gap-3">
+          <h2 className={`${headerTextClass} text-xl font-bold leading-tight tracking-[-0.015em]`}>
+            Content<span className="text-red-600">X</span>
+          </h2>
+        </div>
+
+        {/* Right Section */}
+        <div className="flex items-center justify-end space-x-2">
+           <button className={`flex items-center justify-center h-12 ${headerTextClass}`}>
+            <SearchIcon className={`${headerTextClass}`} />
+          </button>
+          <ThemeToggle />
+           <button onClick={() => setIsSidebarOpen(true)}>
+            <FiMenu size={24} className={headerTextClass} />
+          </button>
+        </div>
+        
       </div>
-      <div className="flex items-center justify-end space-x-2"> 
-        <ThemeToggle />
-        <button className={`flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 bg-transparent ${headerTextClass} gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 p-0`}>
-          <SearchIcon className={`${headerTextClass}`} />
-        </button>
-      </div>
-    </div>
+
+      {/* Sidebar */}
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+    </>
   );
 };
 
