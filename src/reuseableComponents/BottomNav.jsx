@@ -46,25 +46,14 @@ const BottomNav = () => {
         className={`flex flex-1 flex-col items-center justify-end gap-1 rounded-full ${
           isActive('/customize') ? footerBarTextBaseClass : footerBarTextInactiveClass
         }`}
-        to="/customize"
+        to="/Favorites"
       >
         <div className={`flex h-8 items-center justify-center`}>
           <MagicWandIcon className="w-6 h-6" />
         </div>
-        <p className={`text-xs font-medium leading-normal tracking-[0.015em]`}>Customize</p>
+        <p className={`text-xs font-medium leading-normal tracking-[0.015em]`}>Favorites</p>
       </Link>
 
-      <Link
-        className={`flex flex-1 flex-col items-center justify-end gap-1 rounded-full ${
-          isActive('/settings') ? footerBarTextBaseClass : footerBarTextInactiveClass
-        }`}
-        to="/settings"
-      >
-        <div className={`flex h-8 items-center justify-center`}>
-          <GearIcon className="w-6 h-6" />
-        </div>
-        <p className={`text-xs font-medium leading-normal tracking-[0.015em]`}>Settings</p>
-      </Link>
     </div>
   );
 };

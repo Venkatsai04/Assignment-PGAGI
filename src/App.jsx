@@ -9,6 +9,7 @@ import SourcePage from './pages/SourcePage';
 import CustuomizePage from './pages/CustuomizePage';
 import SettingsPage from './pages/SettingsPage';
 import Recommendations from './pages/Recommendations ';
+import Favorites from './pages/Favorites';
 
 
 function App() {
@@ -103,6 +104,7 @@ function App() {
           <Route path="/customize" element={<CustuomizePage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/Recommendations" element={<Recommendations />} />
+          <Route path="/Favorites" element={<Favorites/>} />
          
         </Routes>
       </div>
