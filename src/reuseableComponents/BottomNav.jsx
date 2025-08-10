@@ -39,7 +39,7 @@ const BottomNav = () => {
         <div className={`flex h-8 items-center justify-center`}>
           <ListBulletsIcon className="w-6 h-6" />
         </div>
-        <p className={`text-xs font-medium leading-normal tracking-[0.015em]`}>Recommendations </p>
+        <p className={`text-xs font-medium leading-normal tracking-[0.015em]`}>Recommendations</p>
       </Link>
 
       <Link
