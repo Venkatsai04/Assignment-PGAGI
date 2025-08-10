@@ -39,9 +39,9 @@ const ContentCard = ({ imageUrl, title, description, source, hoursAgo, id, url }
               <p className={`${cardTextClassSpl} text-justify font-normal leading-normal pl-2 pr-2`}>
                 {description}
               </p>
-              <div className='flex flex-row items-center'>
+              <div className='flex flex-row items-center justify-between'>
 
-               <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer ml-2">
+                <button type="button" className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer ml-2">
                   <a
                     href={url}
                     target="_blank"
@@ -50,6 +50,22 @@ const ContentCard = ({ imageUrl, title, description, source, hoursAgo, id, url }
                     Read more
                   </a>
                 </button>
+
+                <div className='cursor-pointer'>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width={'30px'}
+                    height={'30px'}
+                    viewBox="0 0 24 24"
+                    fill={'transparent'}
+                    stroke="white"
+                    strokeWidth="1"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                  </svg>
+                </div>
               </div>
 
             </div>
