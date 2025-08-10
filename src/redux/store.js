@@ -1,5 +1,6 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
 
+// ---- Dark mode persistence ----
 const modeStates = () => {
   try {
     const storedDarkMode = localStorage.getItem('darkMode');
@@ -10,8 +11,9 @@ const modeStates = () => {
   }
 };
 
+// ---- Preferences Slice ----
 const preferencesSlice = createSlice({
-  name: 'modes',
+  name: 'preferences',
   initialState: {
     darkMode: modeStates(),
   },
@@ -23,11 +25,32 @@ const preferencesSlice = createSlice({
   },
 });
 
-export const { setDarkMode } = preferencesSlice.actions;
-
-export const store = configureStore({
-  reducer: {
-    preferences: preferencesSlice.reducer,
+// ---- Favorites Slice ----
+const favoritesSlice = createSlice({
+  name: 'favorites',
+  initialState: {
+    items: [], // store array of favorite cards
+  },
+  reducers: {
+    addFavorite: (state, action) => {
+      // Prevent duplicates
+      if (!state.items.find(item => item.id === action.payload.id)) {
+        state.items.push(action.payload);
+      }
+    },
+    removeFavorite: (state, action) => {
+      state.items = state.items.filter(item => item.id !== action.payload);
+    },
   },
 });
 
+export const { setDarkMode } = preferencesSlice.actions;
+export const { addFavorite, removeFavorite } = favoritesSlice.actions;
+
+// ---- Store ----
+export const store = configureStore({
+  reducer: {
+    preferences: preferencesSlice.reducer,
+    favorites: favoritesSlice.reducer,
+  },
+});
