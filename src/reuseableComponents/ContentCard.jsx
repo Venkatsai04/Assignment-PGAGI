@@ -30,14 +30,14 @@ const ContentCard = ({ imageUrl, title, description, source, hoursAgo, id, url }
 
   return (
     <div className={`${cardBgClass} flex flex-col items-stretch rounded-[8px] shadow-xl/20 relative`}>
-      {/* Hours Ago */}
+ 
       <p
         className={`${cardTextClass} absolute text-sm font-bold m-1.5 ${cardBgClass} w-[105px] p-[5px] rounded-[6px]`}
       >
         {hoursAgo} Hours Ago
       </p>
 
-      {/* Toast */}
+     
       {toastMessage && (
         <span
           className={`absolute top-2 right-2 px-2 py-1 text-xs font-bold rounded ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-yellow-200 text-black'} transition-opacity`}
@@ -46,7 +46,6 @@ const ContentCard = ({ imageUrl, title, description, source, hoursAgo, id, url }
         </span>
       )}
 
-      {/* Image */}
       <div
         className="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg"
         style={{ backgroundImage: `url("${imageUrl}")` }}
@@ -62,7 +61,6 @@ const ContentCard = ({ imageUrl, title, description, source, hoursAgo, id, url }
             <a href={url} target="_blank" rel="noopener noreferrer">Read more</a>
           </button>
 
-          {/* SVG Star with Animation */}
           <div
             className={`cursor-pointer transition-transform duration-300 ${active ? 'scale-125' : 'scale-100'}`}
             onClick={handleFavoriteClick}
