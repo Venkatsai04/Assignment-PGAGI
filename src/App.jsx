@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import Header from './reuseableComponents/Header';
 import FilterBar from './reuseableComponents/FilterBar';
 import ContentCard from './reuseableComponents/ContentCard';
 import BottomNav from './reuseableComponents/BottomNav';
+import SortableCard from './reuseableComponents/SortableCard';
+
 import { useSelector } from 'react-redux';
 import { Routes, Route } from 'react-router-dom';
 import SourcePage from './pages/SourcePage';
@@ -11,23 +13,40 @@ import SettingsPage from './pages/SettingsPage';
 import Recommendations from './pages/Recommendations ';
 import Favorites from './pages/Favorites';
 
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove
+} from '@dnd-kit/sortable';
+import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
+
 function App() {
   const isDarkMode = useSelector((state) => state.preferences.darkMode);
 
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(""); // NEW
+  const [searchTerm, setSearchTerm] = useState("");
 
   const apiKey = '125b498ba5134cf0a375e40a52d32a70';
 
   useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    document.documentElement.classList.toggle('dark', !!isDarkMode);
   }, [isDarkMode]);
+
+  // Build a key to persist order per (category + search)
+  const orderKey = useMemo(
+    () => `cx-order:${selectedCategory}:${searchTerm || 'all'}`,
+    [selectedCategory, searchTerm]
+  );
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -35,19 +54,35 @@ function App() {
         setLoading(true);
         let categoryParam =
           selectedCategory === 'All' ? 'general' : selectedCategory.toLowerCase();
-
         if (categoryParam === 'news') categoryParam = 'general';
         if (categoryParam === 'finance') categoryParam = 'business';
         if (categoryParam === 'tech') categoryParam = 'technology';
 
-        // Only add `q` if searchTerm is not empty
-        let queryParam = searchTerm ? `&q=${encodeURIComponent(searchTerm)}` : '';
-
+        const queryParam = searchTerm ? `&q=${encodeURIComponent(searchTerm)}` : '';
         const res = await fetch(
           `https://newsapi.org/v2/top-headlines?country=us&category=${categoryParam}${queryParam}&apiKey=${apiKey}`
         );
         const data = await res.json();
-        setArticles(data.articles || []);
+
+        // Attach stable ids
+        const withIds = (data.articles || []).map((a, idx) => ({
+          ...a,
+          _id: a.url || `${a.publishedAt || 'na'}-${idx}`
+        }));
+
+        // If we have a saved order, apply it
+        const savedOrder = JSON.parse(localStorage.getItem(orderKey) || '[]');
+        if (savedOrder.length) {
+          const map = new Map(withIds.map(a => [a._id, a]));
+          const reOrdered = savedOrder
+            .map(id => map.get(id))
+            .filter(Boolean);
+          // Append any new items not in saved list
+          const remaining = withIds.filter(a => !savedOrder.includes(a._id));
+          setArticles([...reOrdered, ...remaining]);
+        } else {
+          setArticles(withIds);
+        }
       } catch (err) {
         console.error('Error fetching news:', err);
       } finally {
@@ -55,19 +90,34 @@ function App() {
       }
     };
 
-    // This will run whenever category OR search changes
     fetchNews();
-  }, [selectedCategory, searchTerm]);
+  }, [selectedCategory, searchTerm, orderKey]);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = articles.findIndex(i => i._id === active.id);
+    const newIndex = articles.findIndex(i => i._id === over.id);
+
+    const newOrder = arrayMove(articles, oldIndex, newIndex);
+    setArticles(newOrder);
+
+    // Persist order ids only
+    localStorage.setItem(orderKey, JSON.stringify(newOrder.map(a => a._id)));
+  };
 
   const appBgClassSpl = isDarkMode ? 'bg-[#090030]' : 'bg-amber-50';
 
   return (
     <div className={`relative flex size-full min-h-screen flex-col ${appBgClassSpl} justify-between overflow-x-hidden`}>
       <div className="fixed top-0 w-full z-10">
-        {/* Pass search callback to Header */}
         <Header onSearch={(term) => setSearchTerm(term)} />
-
       </div>
 
       <div className="flex-1 overflow-y-auto mt-[75px] pb-[70px]">
@@ -80,30 +130,43 @@ function App() {
                   selectedCategory={selectedCategory}
                   onSelectCategory={setSelectedCategory}
                 />
+
                 {loading ? (
                   <div className="p-4 text-center text-gray-500">Loading Content...</div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-                    {articles.length > 0 ? (
-                      articles.map((item, idx) => (
-                        <div key={idx} className="@container">
-                          <ContentCard
-                            id={idx}
-                            imageUrl={item.urlToImage}
-                            title={item.title}
-                            description={item.description}
-                            source={item.source?.name}
-                            url={item.url}
-                            hoursAgo={Math.floor(
-                              (Date.now() - new Date(item.publishedAt)) / 3600000
-                            )}
-                          />
-                        </div>
-                      ))
-                    ) : (
-                      <p className="text-center text-gray-500 col-span-full">No results found.</p>
-                    )}
-                  </div>
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <SortableContext
+                      // Pass the ids in current order
+                      items={articles.map(a => a._id)}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+                        {articles.length ? (
+                          articles.map((item) => (
+                            <SortableCard key={item._id} id={item._id} className="@container">
+                              <ContentCard
+                                id={item._id}
+                                imageUrl={item.urlToImage}
+                                title={item.title}
+                                description={item.description}
+                                source={item.source?.name}
+                                url={item.url}
+                                hoursAgo={Math.floor(
+                                  (Date.now() - new Date(item.publishedAt)) / 3600000
+                                )}
+                              />
+                            </SortableCard>
+                          ))
+                        ) : (
+                          <p className="text-center text-gray-500 col-span-full">No results found.</p>
+                        )}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
                 )}
               </>
             }
