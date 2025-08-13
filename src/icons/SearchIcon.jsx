@@ -1,9 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { useSelector } from 'react-redux';
 
 const SearchIcon = ({ onSearch }) => {
+
+  const isDarkMode = useSelector((state) => state.preferences.darkMode);
+
   const [open, setOpen] = useState(false); // Controls input visibility
   const [query, setQuery] = useState("");  // Stores the search text
   const [debouncedQuery, setDebouncedQuery] = useState(""); // Debounced value for API calls
+
+  const TextClass = isDarkMode ? 'text-white' : 'text-black';
 
   // Debounce logic: Waits 500ms after the user stops typing before setting debouncedQuery
   useEffect(() => {
@@ -46,11 +52,10 @@ const SearchIcon = ({ onSearch }) => {
         value={query}
         onChange={handleInputChange}
         placeholder="Search..."
-        className={`transition-all duration-300 ease-in-out border border-gray-300 rounded-full px-4 py-1 text-sm outline-none ${
-          open
+        className={`transition-all duration-300 ease-in-out border border-gray-300 rounded-full px-4 py-1 text-sm outline-none ${TextClass}  ${open
             ? "max-sm:w-34 w-48 opacity-100"
             : "w-0 opacity-0 px-0 border-transparent"
-        }`}
+          }`}
       />
 
       {/* Search Icon Button */}

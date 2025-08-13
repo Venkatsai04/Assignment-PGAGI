@@ -36,12 +36,11 @@ function App() {
         let categoryParam =
           selectedCategory === 'All' ? 'general' : selectedCategory.toLowerCase();
 
-        // Map categories to NewsAPI ones
         if (categoryParam === 'news') categoryParam = 'general';
         if (categoryParam === 'finance') categoryParam = 'business';
         if (categoryParam === 'tech') categoryParam = 'technology';
 
-        // Build the search query
+        // Only add `q` if searchTerm is not empty
         let queryParam = searchTerm ? `&q=${encodeURIComponent(searchTerm)}` : '';
 
         const res = await fetch(
@@ -56,8 +55,10 @@ function App() {
       }
     };
 
+    // This will run whenever category OR search changes
     fetchNews();
-  }, [selectedCategory, searchTerm]); // 🔹 Now also fetch when search term changes
+  }, [selectedCategory, searchTerm]);
+
 
   const appBgClassSpl = isDarkMode ? 'bg-[#090030]' : 'bg-amber-50';
 
