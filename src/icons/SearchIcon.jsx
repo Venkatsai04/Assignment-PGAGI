@@ -10,6 +10,7 @@ const SearchIcon = ({ onSearch }) => {
   const [debouncedQuery, setDebouncedQuery] = useState(""); // Debounced value for API calls
 
   const TextClass = isDarkMode ? 'text-white' : 'text-black';
+  const iconClass = isDarkMode ? 'text-white' : 'text-black';
 
   // Debounce logic: Waits 500ms after the user stops typing before setting debouncedQuery
   useEffect(() => {
@@ -21,14 +22,13 @@ const SearchIcon = ({ onSearch }) => {
     };
   }, [query]);
 
-  // Trigger search whenever debouncedQuery changes
   useEffect(() => {
     if (debouncedQuery.trim() && onSearch) {
       onSearch(debouncedQuery.trim());
     }
   }, [debouncedQuery, onSearch]);
 
-  // Toggle the search bar visibility
+
   const handleToggle = () => {
     setOpen((prev) => !prev);
     if (!open) {
@@ -38,7 +38,7 @@ const SearchIcon = ({ onSearch }) => {
     }
   };
 
-  // Handle input changes
+
   const handleInputChange = (e) => {
     setQuery(e.target.value);
   };
