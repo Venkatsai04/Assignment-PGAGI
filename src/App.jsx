@@ -11,14 +11,15 @@ import SettingsPage from './pages/SettingsPage';
 import Recommendations from './pages/Recommendations ';
 import Favorites from './pages/Favorites';
 
-
 function App() {
   const isDarkMode = useSelector((state) => state.preferences.darkMode);
 
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
-  const apiKey = '125b498ba5134cf0a375e40a52d32a70'
+  const [searchTerm, setSearchTerm] = useState(""); // NEW
+
+  const apiKey = '125b498ba5134cf0a375e40a52d32a70';
 
   useEffect(() => {
     if (isDarkMode) {
@@ -40,8 +41,11 @@ function App() {
         if (categoryParam === 'finance') categoryParam = 'business';
         if (categoryParam === 'tech') categoryParam = 'technology';
 
+        // Build the search query
+        let queryParam = searchTerm ? `&q=${encodeURIComponent(searchTerm)}` : '';
+
         const res = await fetch(
-          `https://newsapi.org/v2/top-headlines?country=us&category=${categoryParam}&apiKey=${apiKey}`
+          `https://newsapi.org/v2/top-headlines?country=us&category=${categoryParam}${queryParam}&apiKey=${apiKey}`
         );
         const data = await res.json();
         setArticles(data.articles || []);
@@ -53,16 +57,16 @@ function App() {
     };
 
     fetchNews();
-  }, [selectedCategory]);
+  }, [selectedCategory, searchTerm]); // 🔹 Now also fetch when search term changes
 
   const appBgClassSpl = isDarkMode ? 'bg-[#090030]' : 'bg-amber-50';
 
   return (
-    <div
-      className={`relative flex size-full min-h-screen flex-col ${appBgClassSpl} justify-between overflow-x-hidden`}
-    >
+    <div className={`relative flex size-full min-h-screen flex-col ${appBgClassSpl} justify-between overflow-x-hidden`}>
       <div className="fixed top-0 w-full z-10">
-        <Header />
+        {/* Pass search callback to Header */}
+        <Header onSearch={(term) => setSearchTerm(term)} />
+
       </div>
 
       <div className="flex-1 overflow-y-auto mt-[75px] pb-[70px]">
@@ -79,33 +83,35 @@ function App() {
                   <div className="p-4 text-center text-gray-500">Loading Content...</div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-                    {articles.map((item, idx) => (
-                      <div key={idx} className="@container">
-                        <ContentCard
-                          id={idx}
-                          imageUrl={item.urlToImage}
-                          title={item.title}
-                          description={item.description}
-                          source={item.source?.name}
-                          url = {item.url}
-                          hoursAgo={Math.floor(
-                            (Date.now() - new Date(item.publishedAt)) / 3600000
-                          )}
-                        />
-                      </div>
-                    ))}
+                    {articles.length > 0 ? (
+                      articles.map((item, idx) => (
+                        <div key={idx} className="@container">
+                          <ContentCard
+                            id={idx}
+                            imageUrl={item.urlToImage}
+                            title={item.title}
+                            description={item.description}
+                            source={item.source?.name}
+                            url={item.url}
+                            hoursAgo={Math.floor(
+                              (Date.now() - new Date(item.publishedAt)) / 3600000
+                            )}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-center text-gray-500 col-span-full">No results found.</p>
+                    )}
                   </div>
                 )}
               </>
             }
           />
-          <Route path="/home" element={<App />} />
           <Route path="/sources" element={<SourcePage />} />
           <Route path="/customize" element={<CustuomizePage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/Recommendations" element={<Recommendations />} />
-          <Route path="/Favorites" element={<Favorites/>} />
-         
+          <Route path="/Favorites" element={<Favorites />} />
         </Routes>
       </div>
 
