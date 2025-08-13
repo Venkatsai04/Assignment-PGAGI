@@ -35,6 +35,7 @@ function App() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1); // ⬅ Track current page
 
   const apiKey = '125b498ba5134cf0a375e40a52d32a70';
 
@@ -42,57 +43,78 @@ function App() {
     document.documentElement.classList.toggle('dark', !!isDarkMode);
   }, [isDarkMode]);
 
-  // Build a key to persist order per (category + search)
   const orderKey = useMemo(
     () => `cx-order:${selectedCategory}:${searchTerm || 'all'}`,
     [selectedCategory, searchTerm]
   );
 
-  useEffect(() => {
-    const fetchNews = async () => {
-      try {
-        setLoading(true);
-        let categoryParam =
-          selectedCategory === 'All' ? 'general' : selectedCategory.toLowerCase();
-        if (categoryParam === 'news') categoryParam = 'general';
-        if (categoryParam === 'finance') categoryParam = 'business';
-        if (categoryParam === 'tech') categoryParam = 'technology';
+  const fetchNews = async (append = false) => {
+    try {
+      setLoading(true);
+      let categoryParam =
+        selectedCategory === 'All' ? 'general' : selectedCategory.toLowerCase();
+      if (categoryParam === 'news') categoryParam = 'general';
+      if (categoryParam === 'finance') categoryParam = 'business';
+      if (categoryParam === 'tech') categoryParam = 'technology';
 
-        const queryParam = searchTerm ? `&q=${encodeURIComponent(searchTerm)}` : '';
-        const res = await fetch(
-          `https://newsapi.org/v2/top-headlines?country=us&category=${categoryParam}${queryParam}&apiKey=${apiKey}`
-        );
-        const data = await res.json();
+      const queryParam = searchTerm ? `&q=${encodeURIComponent(searchTerm)}` : '';
+      const res = await fetch(
+        `https://newsapi.org/v2/top-headlines?country=us&category=${categoryParam}${queryParam}&page=${page}&pageSize=10&apiKey=${apiKey}`
+      );
+      const data = await res.json();
 
-        // Attach stable ids
-        const withIds = (data.articles || []).map((a, idx) => ({
-          ...a,
-          _id: a.url || `${a.publishedAt || 'na'}-${idx}`
-        }));
+      const withIds = (data.articles || []).map((a, idx) => ({
+        ...a,
+        _id: a.url || `${a.publishedAt || 'na'}-${idx}`
+      }));
 
-        // If we have a saved order, apply it
+      if (!append) {
         const savedOrder = JSON.parse(localStorage.getItem(orderKey) || '[]');
         if (savedOrder.length) {
           const map = new Map(withIds.map(a => [a._id, a]));
-          const reOrdered = savedOrder
-            .map(id => map.get(id))
-            .filter(Boolean);
-          // Append any new items not in saved list
+          const reOrdered = savedOrder.map(id => map.get(id)).filter(Boolean);
           const remaining = withIds.filter(a => !savedOrder.includes(a._id));
           setArticles([...reOrdered, ...remaining]);
         } else {
           setArticles(withIds);
         }
-      } catch (err) {
-        console.error('Error fetching news:', err);
-      } finally {
-        setLoading(false);
+      } else {
+        setArticles(prev => [...prev, ...withIds]);
+      }
+    } catch (err) {
+      console.error('Error fetching news:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Reset page when category or search changes
+  useEffect(() => {
+    setPage(1);
+  }, [selectedCategory, searchTerm]);
+
+  // Fetch whenever page changes
+  useEffect(() => {
+    fetchNews(page > 1); // append if not first page
+  }, [page, selectedCategory, searchTerm]);
+
+  // Infinite scroll listener
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop + 50 >=
+        document.documentElement.scrollHeight
+      ) {
+        if (!loading) {
+          setPage(prev => prev + 1);
+        }
       }
     };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [loading]);
 
-    fetchNews();
-  }, [selectedCategory, searchTerm, orderKey]);
-
+  // DnD sensors
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
@@ -107,8 +129,6 @@ function App() {
 
     const newOrder = arrayMove(articles, oldIndex, newIndex);
     setArticles(newOrder);
-
-    // Persist order ids only
     localStorage.setItem(orderKey, JSON.stringify(newOrder.map(a => a._id)));
   };
 
@@ -130,44 +150,39 @@ function App() {
                   selectedCategory={selectedCategory}
                   onSelectCategory={setSelectedCategory}
                 />
-
-                {loading ? (
-                  <div className="p-4 text-center text-gray-500">Loading Content...</div>
-                ) : (
-                  <DndContext
-                    sensors={sensors}
-                    collisionDetection={closestCenter}
-                    onDragEnd={handleDragEnd}
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd}
+                >
+                  <SortableContext
+                    items={articles.map(a => a._id)}
+                    strategy={verticalListSortingStrategy}
                   >
-                    <SortableContext
-                      // Pass the ids in current order
-                      items={articles.map(a => a._id)}
-                      strategy={verticalListSortingStrategy}
-                    >
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-                        {articles.length ? (
-                          articles.map((item) => (
-                            <SortableCard key={item._id} id={item._id} className="@container">
-                              <ContentCard
-                                id={item._id}
-                                imageUrl={item.urlToImage}
-                                title={item.title}
-                                description={item.description}
-                                source={item.source?.name}
-                                url={item.url}
-                                hoursAgo={Math.floor(
-                                  (Date.now() - new Date(item.publishedAt)) / 3600000
-                                )}
-                              />
-                            </SortableCard>
-                          ))
-                        ) : (
-                          <p className="text-center text-gray-500 col-span-full">No results found.</p>
-                        )}
-                      </div>
-                    </SortableContext>
-                  </DndContext>
-                )}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+                      {articles.length ? (
+                        articles.map((item) => (
+                          <SortableCard key={item._id} id={item._id} className="@container">
+                            <ContentCard
+                              id={item._id}
+                              imageUrl={item.urlToImage}
+                              title={item.title}
+                              description={item.description}
+                              source={item.source?.name}
+                              url={item.url}
+                              hoursAgo={Math.floor(
+                                (Date.now() - new Date(item.publishedAt)) / 3600000
+                              )}
+                            />
+                          </SortableCard>
+                        ))
+                      ) : (
+                        <p className="text-center text-gray-500 col-span-full">No results found.</p>
+                      )}
+                    </div>
+                  </SortableContext>
+                </DndContext>
+                {loading && <div className="p-4 text-center text-gray-500">Loading more...</div>}
               </>
             }
           />
@@ -179,9 +194,7 @@ function App() {
         </Routes>
       </div>
 
-      <div>
-        <BottomNav />
-      </div>
+      <BottomNav />
     </div>
   );
 }
