@@ -12,6 +12,8 @@ import CustuomizePage from './pages/CustuomizePage';
 import SettingsPage from './pages/SettingsPage';
 import Recommendations from './pages/Recommendations ';
 import Favorites from './pages/Favorites';
+import { motion, AnimatePresence } from "framer-motion";
+
 
 import {
   DndContext,
@@ -160,29 +162,46 @@ function App() {
                     strategy={verticalListSortingStrategy}
                   >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-                      {articles.length ? (
-                        articles.map((item) => (
-                          <SortableCard key={item._id} id={item._id} className="@container">
-                            <ContentCard
-                              id={item._id}
-                              imageUrl={item.urlToImage}
-                              title={item.title}
-                              description={item.description}
-                              source={item.source?.name}
-                              url={item.url}
-                              hoursAgo={Math.floor(
-                                (Date.now() - new Date(item.publishedAt)) / 3600000
-                              )}
-                            />
-                          </SortableCard>
-                        ))
-                      ) : (
-                        <p className="text-center text-gray-500 col-span-full">No results found.</p>
-                      )}
+                      <AnimatePresence>
+                        {articles.length ? (
+                          articles.map((item) => (
+                            <motion.div
+                              key={item._id}
+                              initial={{ opacity: 0, y: 30 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0 }}
+                              transition={{ duration: 0.4 }}
+                              whileHover={{
+                                scale: 1.02,
+                                boxShadow: "0px 4px 20px rgba(0,0,0,0.15)"
+                              }}
+                            >
+                              <SortableCard id={item._id} className="@container">
+                                <ContentCard
+                                  id={item._id}
+                                  imageUrl={item.urlToImage}
+                                  title={item.title}
+                                  description={item.description}
+                                  source={item.source?.name}
+                                  url={item.url}
+                                  hoursAgo={Math.floor(
+                                    (Date.now() - new Date(item.publishedAt)) / 3600000
+                                  )}
+                                />
+                              </SortableCard>
+                            </motion.div>
+                          ))
+                        ) : (
+                          <p className="text-center text-gray-500 col-span-full">
+                            No results found.
+                          </p>
+                        )}
+                      </AnimatePresence>
+
                     </div>
                   </SortableContext>
                 </DndContext>
-                {loading && <div className="p-4 text-center text-gray-500">Loading more...</div>}
+               {loading && <Spinner />}
               </>
             }
           />
@@ -198,5 +217,18 @@ function App() {
     </div>
   );
 }
+
+function Spinner() {
+  return (
+    <motion.div
+      className="flex justify-center items-center p-4"
+      animate={{ rotate: 360 }}
+      transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+    >
+      <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+    </motion.div>
+  );
+}
+
 
 export default App;
