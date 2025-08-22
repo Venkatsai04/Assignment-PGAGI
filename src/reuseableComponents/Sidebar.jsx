@@ -43,11 +43,6 @@ const Sidebar = ({ isOpen, onClose }) => {
 
       {/* Settings */}
       <div className="p-4 space-y-2">
-        <Link onClick={onClose}>
-          <button className="w-full text-left p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-300">
-            Profile
-          </button>
-        </Link>
         <Link to="/sources" onClick={onClose}>
           <button className="w-full text-left p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-300">
             Preferences
@@ -63,11 +58,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             Settigns
           </button>
         </Link >
-        <Link onClick={onClose}>
-          <button className="w-full text-left p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-300">
-            Logout
-          </button>
-        </Link>
+      
       </div>
     </div>
   );

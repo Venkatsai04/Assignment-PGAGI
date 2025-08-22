@@ -90,17 +90,16 @@ function App() {
     }
   };
 
-  // Reset page when category or search changes
+
   useEffect(() => {
     setPage(1);
   }, [selectedCategory, searchTerm]);
 
-  // Fetch whenever page changes
   useEffect(() => {
-    fetchNews(page > 1); // append if not first page
+    fetchNews(page > 1); 
   }, [page, selectedCategory, searchTerm]);
 
-  // Infinite scroll listener
+
   useEffect(() => {
     const handleScroll = () => {
       if (
@@ -116,7 +115,6 @@ function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [loading]);
 
-  // DnD sensors
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
