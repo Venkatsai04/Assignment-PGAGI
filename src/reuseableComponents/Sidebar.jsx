@@ -29,11 +29,10 @@ const Sidebar = ({ isOpen, onClose }) => {
       {/* User Info */}
       <div className="p-4 border-b">
         <div className="flex items-center gap-3">
-          <img
-            src="user.svg"
-            alt="User"
-            className="rounded-full w-12 h-12"
-          />
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2" fill="none" />
+            <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" />
+          </svg>
           <div>
             <h3 className="font-semibold">Albert Einsten</h3>
             <p className="text-sm text-gray-500">Albert@Einsten.com</p>
@@ -58,7 +57,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             Settigns
           </button>
         </Link >
-      
+
       </div>
     </div>
   );

@@ -1,7 +1,8 @@
 // src/components/ThemeToggle.jsx
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setDarkMode } from '../redux/store.js';
+import { setDarkMode } from "../redux/store";
+
 import SunIcon from '../icons/SunIcon.jsx';
 import MoonIcon from '../icons/MoonIcon.jsx';
 
