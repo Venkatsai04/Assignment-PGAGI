@@ -40,7 +40,7 @@ function App() {
   const [page, setPage] = useState(1); // ⬅ Track current page
 
   const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
-  console.log("API KEY:", API_KEY);
+  // console.log("API KEY:", API_KEY);
 
 
 
