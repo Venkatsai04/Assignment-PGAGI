@@ -14,11 +14,7 @@ import { CSS } from "@dnd-kit/utilities";
 
 const SourceCard = ({ source, id, textClass, inactiveClass, bgClass }) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
+  const style = { transform: CSS.Transform.toString(transform), transition };
 
   return (
     <div
@@ -48,7 +44,7 @@ const SourcePage = () => {
   const SourcePageTextBaseClass = isDarkMode ? "text-white" : "text-black";
   const SourcePageTextInactiveClass = isDarkMode ? "text-[#adadad]" : "text-gray-600";
 
-  // One channel pre-selected in Your Preferences
+  
   const [yourSources, setYourSources] = useState(
     JSON.parse(localStorage.getItem("yourSources")) || [
       {
@@ -184,7 +180,7 @@ const SourcePage = () => {
 
         <DragOverlay>
           {activeId && (
-            <div className="rounded-lg px-4 py-2 bg-black/80 text-white">
+            <div className="rounded-lg px-4 py-2 bg-indigo-600 text-white shadow-lg">
               {yourSources.concat(availableSources).find((s) => s.id === activeId)?.subtitle}
             </div>
           )}
