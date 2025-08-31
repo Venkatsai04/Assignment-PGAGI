@@ -4,14 +4,12 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  resolve: {
-    alias: {
-      "react-redux": "react-redux", // force correct resolution
-    },
+  optimizeDeps: {
+    include: ["react-redux"], // ✅ ensure it's bundled
   },
   build: {
     rollupOptions: {
-      external: [], // ensure nothing is excluded
+      external: [], // don’t externalize react-redux
     },
   },
 });
