@@ -5,7 +5,7 @@ import SearchIcon from '../icons/SearchIcon';
 import { FiMenu } from 'react-icons/fi'; 
 import Sidebar from './Sidebar'; 
 
-// Accept `onSearch` as a prop
+
 const Header = ({ onSearch }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isDarkMode = useSelector((state) => state.preferences.darkMode);
