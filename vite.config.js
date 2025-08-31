@@ -5,11 +5,11 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   optimizeDeps: {
-    include: ["react-redux"], // ✅ ensure it's bundled
+    include: ["react-redux"], 
   },
   build: {
     rollupOptions: {
-      external: [], // don’t externalize react-redux
+      external: [], 
     },
   },
 });

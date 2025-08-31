@@ -37,13 +37,10 @@ function App() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [page, setPage] = useState(1); // ⬅ Track current page
+  const [page, setPage] = useState(1); // 
 
+  // const API_KEY = '30a0fa0bb3e540128e9cd28a8fa399d7';
   const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
-  // console.log("API KEY:", API_KEY);
-
-
-
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', !!isDarkMode);
@@ -100,7 +97,7 @@ function App() {
   }, [selectedCategory, searchTerm]);
 
   useEffect(() => {
-    fetchNews(page > 1);
+    fetchNews(page > 1); 
   }, [page, selectedCategory, searchTerm]);
 
 
@@ -203,7 +200,7 @@ function App() {
                     </div>
                   </SortableContext>
                 </DndContext>
-                {loading && <Spinner />}
+               {loading && <Spinner />}
               </>
             }
           />
