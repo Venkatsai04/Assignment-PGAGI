@@ -50,10 +50,10 @@ const SearchIcon = ({ onSearch }) => {
         <button
           type="button"
           onClick={handleToggle}
-          className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+          className={`${TextClass} p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors`}
           aria-label="Toggle Search"
         >
-          🔍
+          🔍︎
         </button>
       </div>
     </form>

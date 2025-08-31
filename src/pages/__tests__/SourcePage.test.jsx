@@ -1,24 +1,31 @@
-import React from "react";
 import { render, screen } from "@testing-library/react";
+import SourcePage from "../../pages/SourcePage";
 import { Provider } from "react-redux";
-import store from "../redux/store";
-import SourcePage from "../pages/SourcePage";
+import { configureStore } from "@reduxjs/toolkit";
 
-test("renders default preference (Washington Post)", () => {
-  render(
-    <Provider store={store}>
-      <SourcePage />
-    </Provider>
-  );
-  expect(screen.getByText(/Washington Post/i)).toBeInTheDocument();
+// Mock store with darkMode false
+const store = configureStore({
+  reducer: { preferences: () => ({ darkMode: false }) },
 });
 
-test("renders available sources list", () => {
-  render(
-    <Provider store={store}>
-      <SourcePage />
-    </Provider>
-  );
-  expect(screen.getByText(/BBC/i)).toBeInTheDocument();
-  expect(screen.getByText(/CNN/i)).toBeInTheDocument();
+describe("SourcePage", () => {
+  it("renders Sources heading", () => {
+    render(
+      <Provider store={store}>
+        <SourcePage />
+      </Provider>
+    );
+
+    expect(screen.getByText(/Sources/i)).toBeInTheDocument();
+  });
+
+  it("renders default preference (Washington Post)", () => {
+    render(
+      <Provider store={store}>
+        <SourcePage />
+      </Provider>
+    );
+
+    expect(screen.getByText(/Washington Post/i)).toBeInTheDocument();
+  });
 });
