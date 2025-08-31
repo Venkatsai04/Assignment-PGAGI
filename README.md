@@ -15,7 +15,6 @@ PCD/
 # File Tree: PCD
 
 Generated on: 8/31/2025, 2:13:05 PM
-Root path: `c:\Users\ADMIN\Desktop\🤐\Assignments\PGAGI assignment\PCD`
 
 ```
 ├── 📁 .git/ 🚫 (auto-hidden)
@@ -75,7 +74,7 @@ Root path: `c:\Users\ADMIN\Desktop\🤐\Assignments\PGAGI assignment\PCD`
 
 ## ⚙️ Setup  
 ```bash
-git clone https://github.com/<your-username>/PCD.git
+git clone https://github.com//Venkatsai04/Assignment-PGAGI/
 cd PCD
 npm install
 npm run dev
