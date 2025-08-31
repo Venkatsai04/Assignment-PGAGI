@@ -39,7 +39,8 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1); // ⬅ Track current page
 
-  const apiKey = '125b498ba5134cf0a375e40a52d32a70';
+  const API_KEY = '30a0fa0bb3e540128e9cd28a8fa399d7';
+  // const API_KEY = import.meta.env.NEWS_API_KEY;
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', !!isDarkMode);
@@ -61,7 +62,7 @@ function App() {
 
       const queryParam = searchTerm ? `&q=${encodeURIComponent(searchTerm)}` : '';
       const res = await fetch(
-        `https://newsapi.org/v2/top-headlines?country=us&category=${categoryParam}${queryParam}&page=${page}&pageSize=10&apiKey=${apiKey}`
+        `https://newsapi.org/v2/top-headlines?country=us&category=${categoryParam}${queryParam}&page=${page}&pageSize=10&apiKey=${API_KEY}`
       );
       const data = await res.json();
 
